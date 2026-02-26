@@ -4,217 +4,240 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Special Surprise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Pacifico&display=swap" rel="stylesheet">
+    
     <style>
+        :root { 
+            --accent-purple: #9d81ba; 
+            --soft-lavender: #e0d1f0;
+            --honey-gold: #f9d976;
+            --text-gray: #5a5a5a;
+        }
+
         body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #ffe5ec;
-            font-family: 'Arial Rounded MT Bold', 'Helvetica', sans-serif;
-            overflow: hidden;
-            touch-action: manipulation;
+            margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center;
+            background: linear-gradient(135deg, #f3e7ff 0%, #e3eeff 100%);
+            font-family: 'Fredoka', sans-serif; overflow: hidden; touch-action: manipulation;
         }
 
-        .container {
-            text-align: center;
-            z-index: 10;
+        /* Fixed Heart Rain - Set to pointer-events: none so you can tap through it */
+        .heart-rain { 
+            position: absolute; top: -50px; z-index: 5; 
+            -webkit-user-select: none; user-select: none; pointer-events: none; 
+            animation: fall linear forwards; 
+        }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+        .watermark { position: fixed; bottom: 15px; width: 100%; text-align: center; font-size: 0.8rem; color: var(--accent-purple); opacity: 0.6; z-index: 100; }
+
+        .container, .card {
+            text-align: center; z-index: 20; background: rgba(255, 255, 255, 0.8);
+            padding: 25px; border-radius: 40px; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+            border: 3px solid white; box-shadow: 0 15px 35px rgba(157, 129, 186, 0.2);
+            max-width: 340px; width: 90%; position: relative;
         }
 
-        /* The Mystery Box */
-        #giftBox {
-            font-size: 80px;
-            cursor: pointer;
+        .pixel-cat { width: 100px; margin-bottom: 10px; border-radius: 20px; }
+        
+        #giftBox { 
+            font-size: 80px; cursor: pointer; display: inline-block; 
+            animation: pulse 2s infinite; -webkit-user-select: none; user-select: none; 
             transition: transform 0.1s;
-            display: inline-block;
-            -webkit-user-select: none;
-            user-select: none;
-
         }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+        #giftBox:active { transform: scale(0.9); }
 
-        #giftBox:active {
-            transform: scale(0.9);
+        .progress-container { width: 100%; height: 12px; background: #fff; border-radius: 20px; margin: 20px 0; border: 2px solid var(--soft-lavender); overflow: hidden; }
+        #progressBar { width: 0%; height: 100%; background: var(--accent-purple); transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        .card { display: none; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        h1 { color: var(--accent-purple); font-family: 'Pacifico', cursive; margin: 10px 0; font-size: 1.6rem; }
+        
+        .sweet-message {
+            font-size: 0.95rem; color: var(--text-gray); line-height: 1.6; 
+            max-height: 160px; overflow-y: auto; padding: 0 10px;
+            margin: 15px 0; text-align: center; font-style: italic;
         }
+        .sweet-message::-webkit-scrollbar { width: 4px; }
+        .sweet-message::-webkit-scrollbar-thumb { background: var(--soft-lavender); border-radius: 10px; }
 
-        .wobble {
-            animation: wobble 0.5s infinite;
-        }
-
-        @keyframes wobble {
-            0% { transform: rotate(0deg); }
-            25% { transform: rotate(5deg); }
-            50% { transform: rotate(0deg); }
-            75% { transform: rotate(-5deg); }
-            100% { transform: rotate(0deg); }
-        }
-
-        /* Progress Bar */
-        .progress-container {
-            width: 200px;
-            height: 20px;
-            background: #fff;
-            border-radius: 10px;
-            margin: 20px auto;
-            border: 3px solid #ffb3c1;
-            overflow: hidden;
-        }
-
-        #progressBar {
-            width: 0%;
-            height: 100%;
-            background: #ff4d6d;
-            transition: width 0.2s;
-        }
-
-        /* Card Style */
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 30px;
-            box-shadow: 0 10px 20px rgba(255, 77, 109, 0.2);
-            display: none; /* Hidden at start */
-            border: 4px solid #ffccd5;
-            max-width: 320px;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        h1 { color: #ff4d6d; font-size: 1.5rem; }
-        p { color: #666; font-size: 1rem; line-height: 1.4; }
-
-        .btns {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
+        .btns { display: flex; justify-content: center; gap: 15px; margin-top: 15px; min-height: 50px; position: relative; }
+        
         button {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 1rem;
+            padding: 12px 28px; border: none; border-radius: 50px; font-weight: bold;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; transition: 0.2s;
+        }
+        #yesBtn { background: var(--accent-purple); color: white; box-shadow: 0 4px 15px rgba(157, 129, 186, 0.4); }
+        #noBtn { background: var(--soft-lavender); color: var(--accent-purple); }
+
+        .option-group { text-align: left; margin: 15px 0; }
+        label { display: block; font-size: 0.85rem; color: var(--accent-purple); margin-bottom: 5px; font-weight: 600; }
+        select, input {
+            width: 100%; padding: 12px; border-radius: 15px; border: 2px solid var(--soft-lavender);
+            font-family: 'Fredoka', sans-serif; outline: none; box-sizing: border-box; background: #fff;
         }
 
-        #yesBtn { background: #ff4d6d; color: white; }
-        #noBtn { background: #fb6f92; color: white; position: relative; }
-
-        /* Confetti/Hearts Effect */
-        .particle {
-            position: absolute;
-            pointer-events: none;
-            animation: floatUp 1s forwards;
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-100px) scale(0); opacity: 0; }
-        }
-
-        #instruction h2 {
-            color: #ff4d6d;
-        }
-
-        .emoji-large {
-            font-size: 50px;
-        }
+        .tap-heart { position: absolute; pointer-events: none; z-index: 100; animation: floatUp 0.8s forwards; font-size: 24px; }
+        @keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-120px) scale(1.5); opacity: 0; } }
     </style>
 </head>
 <body>
 
+    <div class="watermark">Designed by Glenn Dale M. Gealon</div>
+
     <div class="container" id="gameArea">
-        <div id="instruction">
-            <h2>Tap the gift 10 times!</h2>
-        </div>
-        
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueHZueHlodW54eHlodW54eHlodW54eHlodW54eHlodW54ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/MDJ9IbxxvDUQM/giphy.gif" class="pixel-cat" alt="Cute pixel cat animation">
+        <h2 style="color: var(--accent-purple); font-size: 1.1rem; margin-top: 0;">Tap the gift 10 times! 💝</h2>
         <div id="giftBox" onclick="handleTap()">🎁</div>
-        
-        <div class="progress-container">
-            <div id="progressBar"></div>
-        </div>
+        <div class="progress-container"><div id="progressBar"></div></div>
     </div>
 
-    <div class="card" id="inviteCard">
-        <div class="emoji-large">💖</div>
-        <h1>Will you be my Valentine?</h1>
-       <p>
-Out of all the people in this world,
-you're the one I want to spend my time with.
-No pressure, no drama 
-just good vibes, laughter, and maybe a little kilig. 🥰
-Will you be my Valentine?
-</p>
-        <div class="btns">
-            <button id="yesBtn" onclick="finish()">Yes!</button>
-            <button id="noBtn" onmouseover="dodge()" onclick="dodge()">No</button>
+    <div id="inviteCard" class="card">
+        <img src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyYzZqd3I0aTFoNjQ0cTFveTkybmxobmhhMmI3NWlvbTM4bTI4cXNvaiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/f0lS4lOcrGGaAVpxT8/source.gif" width="100" alt="Romantic celebration animation">
+        <h1>For Your Eyes Only...</h1>
+<div class="sweet-message">
+    Look, we both know we're going to have a blast no matter what, but I like doing the most. 
+    So, instead of a low-effort DM, you get this custom-coded invitation. You make my life feel like 
+    a high-score win every single day, and I'd really love to spend Valentine's with you. 
+    I’ve programmed the 'No' button to have an identity crisis and run away, so the choice is 
+    technically yours but I’m really hoping you choose the one that doesn't dodge!
+</div>
+        <div class="btns" style="position: relative; min-height: 60px;">
+    <button id="yesBtn" onclick="showPlanning()">YES! 💜</button>
+    <button id="noBtn" 
+        onmousemove="dodge()" 
+        onmouseover="dodge()" 
+        style="position: relative; z-index: 1000; transition: all 0.3s ease;">
+        No
+    </button>
+</div>
+    </div>
+
+    <div id="planningCard" class="card">
+        <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGtoaXNicDdqZWZ6emFkZ2p6Ymt5MHIyenlvbDAzc3EyOTM3bjIwcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/vqvmGLZdqxNzCtVlR3/giphy.gif" width="100" alt="Happy planning animation">
+        <h1>Sweet! Let's Plan!</h1>
+        <div class="option-group">
+            <label>What’s the vibe?</label>
+           <select id="activity" style="width:100%; padding:10px; border-radius:15px; border: 2px solid var(--soft-lavender); margin-top:5px;">
+    <option value="Fine Dining">High-Stakes Calorie Consumption (Romantic Dinner) 🍽️</option>
+    <option value="Coffee">Professional Caffeine Addiction Meeting (Coffee Date) ☕</option>
+    <option value="Movie">Staring at a Screen in Silence for 2 Hours (Movie) 🎬</option>
+    <option value="Arcade">Competitive Button Mashing & Ticket Fraud (Arcade) 🕹️</option>
+    <option value="Museum">Staring at Old Stuff and Pretending to be Deep (Museum) 🖼️</option>
+    <option value="Walk">Unpaid Manual Labor (A Long Walk in the Park) 🌳</option>
+</select>
         </div>
+        <div class="option-group">
+            <label>Pick a day:</label>
+            <input type="date" id="datePicker">
+        </div>
+        <button style="background:var(--accent-purple); color:white; width: 100%;" onclick="finish()">Confirm Our Date! ✨</button>
+    </div>
+
+    <div id="finalCard" class="card">
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnZueHludW54eHludW54eHludW54eHludW54eHludW54eHludSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/KztT2c4u8mYYUiMKdJ/giphy.gif" width="120" alt="Excited date confirmation animation">
+        <h1>It's a Date!</h1>
+        <p id="summaryText" style="font-weight: 600; color: var(--accent-purple);"></p>
+        <p style="font-size: 0.9rem; margin-top: 10px;">I'll be waiting! Take a screenshot and send it to me. 💜</p>
     </div>
 
     <script>
+        // FIXED HEART RAIN
+        function createRain() {
+            const heart = document.createElement('div');
+            heart.className = 'heart-rain';
+            // Using purple/lavender hearts
+            heart.innerHTML = ['💜','✨','☁️','🌸','💟','💘','🌷','🥀','🫶🏻'][Math.floor(Math.random() * 9)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            heart.style.opacity = Math.random() * 0.5 + 0.3;
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+        setInterval(createRain, 400);
+
         let taps = 0;
-        const requiredTaps = 10;
 
         function handleTap() {
             taps++;
             const bar = document.getElementById('progressBar');
             const box = document.getElementById('giftBox');
             
-            // Update Progress
-            let percentage = (taps / requiredTaps) * 100;
-            bar.style.width = percentage + '%';
-
-            // Visual feedback
-            box.classList.add('wobble');
-            setTimeout(() => box.classList.remove('wobble'), 200);
+            bar.style.width = (taps / 10) * 100 + '%';
             
-            // Spawn heart particle
-            spawnHeart();
+            // Pop heart effect on tap
+            const rect = box.getBoundingClientRect();
+            const tapHeart = document.createElement('div');
+            tapHeart.className = 'tap-heart';
+            tapHeart.innerHTML = '💜';
+            tapHeart.style.left = (rect.left + rect.width/2 - 15) + 'px';
+            tapHeart.style.top = rect.top + 'px';
+            document.body.appendChild(tapHeart);
+            setTimeout(() => tapHeart.remove(), 800);
 
-            if (taps >= requiredTaps) {
-                revealInvitation();
+            if (taps >= 10) {
+                document.getElementById('gameArea').style.display = 'none';
+                document.getElementById('inviteCard').style.display = 'block';
             }
-        }
-
-        function spawnHeart() {
-            const heart = document.createElement('div');
-            heart.className = 'particle';
-            heart.innerHTML = '❤️';
-            heart.style.left = (window.innerWidth / 2 + (Math.random() * 60 - 30)) + 'px';
-            heart.style.top = (window.innerHeight / 2 - 20) + 'px';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 1000);
-        }
-
-        function revealInvitation() {
-            document.getElementById('gameArea').style.display = 'none';
-            document.getElementById('inviteCard').style.display = 'block';
         }
 
         function dodge() {
             const btn = document.getElementById('noBtn');
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 50);
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
             btn.style.position = 'fixed';
             btn.style.left = x + 'px';
             btn.style.top = y + 'px';
         }
 
-       function finish() {
-    document.getElementById('inviteCard').innerHTML = `
-        <div style="font-size: 60px;">🥹</div>
-        <h1>That means a lot to me.</h1>
-        <p>Thank you for saying yes.</p>
-        <p>I’ll make sure it’s a day worth remembering. ❤️</p>
-        <p style="font-size: 0.8rem; color: #999;">Can’t wait to see you.</p>
-    `;
+        function showPlanning() {
+            document.getElementById('inviteCard').style.display = 'none';
+            document.getElementById('planningCard').style.display = 'block';
+        }
+
+        function finish() {
+            const act = document.getElementById('activity').value;
+            const d = document.getElementById('datePicker').value;
+            const date = d ? new Date(d).toDateString() : "the perfect day";
+            document.getElementById('planningCard').style.display = 'none';
+            document.getElementById('finalCard').style.display = 'block';
+            document.getElementById('summaryText').innerHTML = `Can't wait for our ${act}<br>on ${date}!`;
+        }
+        function dodge() {
+    const btn = document.getElementById('noBtn');
+    
+    // 1. Move the button (your existing logic)
+    const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+    const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+    
+    btn.style.position = 'fixed';
+    btn.style.left = x + 'px';
+    btn.style.top = y + 'px';
+
+    // 2. Add the "Panic" Phrases
+    const phrases = [
+        "No", 
+        "Wait!", 
+        "Wrong way!", 
+        "Not here!", 
+        "Try again! 😜", 
+        "Nope!", 
+        "Missed me!", 
+        "Too slow!", 
+        "Over here!",
+        "Nice try!"
+    ];
+    
+    const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];   
+     btn.innerText = randomPhrase;
+
+    btn.style.padding = "12px 28px";
+    btn.style.width = "auto";
 }
     </script>
+    
 </body>
 </html>
